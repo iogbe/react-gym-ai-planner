@@ -5,6 +5,7 @@ import { authClient } from "../lib/auth";
 interface AuthContextType {
     user: User | null;
     isLoading: boolean;
+    saveProfile: (Omit<UserProfile, "userId" | "updatedAt">) => Promise<void>; 
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
