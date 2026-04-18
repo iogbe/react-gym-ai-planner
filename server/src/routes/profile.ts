@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { prisma } from "../lib/primsa";
+import { prisma } from "../lib/prisma";
 
 export const profileRouter = Router();
 
@@ -32,7 +32,7 @@ profileRouter.post("/", async (req: Request, res: Response) => {
             return res.status(400).json({ error: `Missing Isaias required profile data ${JSON.stringify(profileData)}` });
         }
         await prisma.user_profiles.upsert({ 
-            where: { user_id: userId},
+            where: { user_id: userId },
             update: {
                 goal,
                 experience,

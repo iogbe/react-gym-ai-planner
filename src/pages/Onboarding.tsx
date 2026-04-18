@@ -5,7 +5,7 @@ import { Select } from "../components/ui/Select";
 import { useState } from "react";
 import { Textarea } from "../components/ui/Textarea";
 import { Button } from "../components/ui/Button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import type { UserProfile } from "../types";
 
 const goalOptions = [
@@ -61,6 +61,9 @@ export default function Onboarding() {
         injuries: "",
         preferredSplit: "upper_lower",
     });
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [error, setError] = useState("");
+    console.log(isGenerating, error);
 
     function updateForm(field: string, value: string) {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -81,8 +84,11 @@ export default function Onboarding() {
         console.log("Saving profile:", profile);
         try {
             await saveProfile(profile);
-        } catch (error) {
-            console.error("Form Isaias submission failed", error);
+            setIsGenerating(true);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to save profile");
+        } finally {
+            setIsGenerating(false);
         }
     }
 
@@ -97,6 +103,7 @@ export default function Onboarding() {
                     {/* Progress Indicator */}
 
                     {/* Step 1: Questionnaire*/}
+                    {!isGenerating ? ( 
                     <Card variant="bordered">
                         <h1 className="text-2xl font-bold mb-2">
                             Tell Us About Yourself
@@ -163,9 +170,18 @@ export default function Onboarding() {
                                 </Button>
                             </div>
                         </form>
+                    </Card> 
+                    ) : (
+                     /* Step 2: Generating */
+                     <Card variant="bordered" className="text-center py-16">
+                        <Loader2 className="w-12 h-12 text-[var(--color-accent)] mx-auto mb-6 animate-spin" />
+                        <h1 className="text2xl font-bold mb-2">Creating your Plan</h1>
+                        <p className="text-[var(--color-muted)]">
+                            {" "}
+                            Our AI is building your personalized training program...
+                        </p>
                     </Card>
-
-                    {/* Step 2: Generating */}
+                    )}
                 </div>
             </div>
         </SignedIn>

@@ -38,11 +38,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     async function saveProfile(
         profileData: Omit<UserProfile, "userId" | "updatedAt">,
-) {
+    ) {
         if (!neonUser) {
             throw new Error("User must be authenticated to save profile");
         }
-
         await api.saveProfile(neonUser.id, profileData);
     }
     return (
