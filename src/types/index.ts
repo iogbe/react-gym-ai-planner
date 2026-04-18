@@ -6,7 +6,7 @@ export interface User {
 
 export interface UserProfile {
     userId: string;
-    goal: "bulk" | "cut" | "maintain";
+    goal: "cut" | "bulk" | "recomp" | "strength" | "endurance";
     experience: "beginner" | "intermediate" | "advanced";
     daysPerWeek: number;
     sessionLength: number;

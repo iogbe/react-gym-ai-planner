@@ -26,11 +26,10 @@ profileRouter.post("/", async (req: Request, res: Response) => {
             !experience || 
             !daysPerWeek || 
             !sessionLength || 
-            !equipment || 
-            !injuries || 
+            !equipment ||  
             !preferredSplit
         ) {
-            return res.status(400).json({ error: "Missing required profile data" });
+            return res.status(400).json({ error: `Missing Isaias required profile data ${JSON.stringify(profileData)}` });
         }
         await prisma.user_profiles.upsert({ 
             where: { user_id: userId},
@@ -55,6 +54,8 @@ profileRouter.post("/", async (req: Request, res: Response) => {
                 preffered_split: preferredSplit,
             },
     });
+
+    res.json({ success: true });
     } catch (error) {
         console.error("Error savying profile:", error);
         res.status(500).json({ error: "Failed to save profile" });
