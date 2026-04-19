@@ -16,7 +16,7 @@ export async function generateTrainingPlan(
         equipment: profile.equipment || "full_gym",
         injuries: profile.injuries || null,
         preferred_split: profile.preferred_split || "upper_lower",
-    }
+    };
 
     const apiKey = process.env.OPEN_ROUTER_KEY;
 
@@ -30,12 +30,13 @@ export async function generateTrainingPlan(
         defaultHeaders: {
             "HTTP-Referer": process.env.BASE_URL || "http://localhost:3001",
             "X-Title": "GymAI Plan Generator",
-        }
+        },
     });
 
 
     // Build the prompt
     const prompt = buildPrompt(normalizedProfile);
+
     try {
         const completion = await openai.chat.completions.create({
             model: "nvidia/nemotron-3-nano-30b-a3b:free",
@@ -66,14 +67,47 @@ export async function generateTrainingPlan(
 
         const planData = JSON.parse(content);
 
-        return planData;
+        return formatPlanResponse(planData, normalizedProfile);
 
     } catch (error) {
         console.error("[AI] Error generating training plan:", error);
         throw error;
     }
-    
-    function buildPrompt(profile: UserProfile): string {
+}
+
+function formatPlanResponse(
+    aiResponse: any,
+    profile: UserProfile,
+): Omit<TrainingPlan, "id" | "userId" | "version" | "createdAt"> {
+    const plan: Omit<TrainingPlan, "id" | "userId" | "version" | "createdAt"> = {
+        overview: {
+            goal: aiResponse.overview?.goal || `Customized ${profile.goal} program`,
+            frequency: aiResponse.overview?.frequency || `${profile.days_per_week} days per week`,
+            split: aiResponse.overview?.split || profile.preferred_split,
+            notes: aiResponse.overview?.notes || "Follow the program consistently for best results",
+        },
+        weeklySchedule: (aiResponse.weeklySchedule || []).map((day: any) => ({
+            day: day.day || "Day",
+            focus: day.focus || "Full Body",
+            exercises: (day.exercises || []).map((ex: any) => ({
+                name: ex.name || "Exercise",
+                sets: ex.sets || 3,
+                reps: ex.reps || "8-12",
+                rest: ex.rest || "60-90 sec",
+                rpe: ex.rpe || 7,
+                notes: ex.notes || "",
+                alternatives: ex.alternatives,
+            })),
+        })),
+        progression:
+            aiResponse.progression ||
+            "Increase weights by 2.5-5lbs when you can complete all sets with good form. Track your progress weekly.",
+    };
+
+    return plan;
+}
+
+function buildPrompt(profile: UserProfile): string {
         const goalMap: Record<string, string> = {
             bulk: "build muscle and gain size",
             cut: "lose fat and maintain muscle",
@@ -100,11 +134,6 @@ export async function generateTrainingPlan(
             ppl: "push/pull/legs split",
             custom: "best split for their goals",
         };
-
-
-
-
-
 
         return `Create a personalized ${profile.days_per_week}-day per week training plan for someone with the following profile:
   
@@ -155,19 +184,5 @@ export async function generateTrainingPlan(
         - Make it progressive and suitable for ${experienceMap[profile.experience] || profile.experience} level
         
         Return ONLY the JSON object (no markdown, no extra text).
-        `;
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    }
+        `;        
 }
