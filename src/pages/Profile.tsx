@@ -2,8 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Profile() {
-    const { user, isLoading } = useAuth();
-    const plan = false;
+    const { user, isLoading, plan } = useAuth();
 
     if (!user && !isLoading) {
         return <Navigate to="/auth/sign-in" replace />;
@@ -14,6 +13,17 @@ export default function Profile() {
     }
 
     return (
-        <div>Profile Page</div>
+        <div className="min-h-screen pt-24 pb-12 px-6">
+            <div className="max-w-4xl mx-auto">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 className="text-3xl font-bold mb-1">Your Training Plan</h1>
+                        <p className="text-[var(--color-muted)]">
+                            Version
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
