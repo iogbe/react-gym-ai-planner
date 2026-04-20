@@ -12,7 +12,7 @@ function App() {
   const Router = import.meta.env.PROD ? HashRouter : BrowserRouter;
   
   return (
-    <NeonAuthUIProvider authClient={authClient} defaultTheme="dark">
+    <NeonAuthUIProvider emailOTP authClient={authClient} defaultTheme="dark">
     <AuthProvider>
     <Router>
     <div className="min-h-screen flex flex-col">
