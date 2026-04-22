@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 
 export default function Auth() {
     const { pathname } = useParams();
+    console.log(`${pathname}`);
     return (
     <div className="min-h-screen pt-24 pb-12 px-6 flex items-center justify-center">
         <div className="max-w-md w-full">
