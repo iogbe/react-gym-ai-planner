@@ -25,7 +25,7 @@ export default function Navbar() {
                         My Plan
                     </Button>
                 </Link>
-                <UserButton className="bg-(--color-accent)" />
+                <UserButton className="bg-(--color-accent)" size="icon"/>
                 </>
                 ) : (
                 <>

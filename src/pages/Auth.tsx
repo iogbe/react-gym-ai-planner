@@ -1,7 +1,8 @@
 import { AuthView } from "@neondatabase/neon-js/auth/react";
 import { useParams } from "react-router";
-
+console.log("Auth.tsx at top level of file runs");
 export default function Auth() {
+    console.log("Auth.tsx in return statement runs");
     const { pathname } = useParams();
     console.log(`${pathname}`);
     return (
