@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Onboarding from './pages/Onboarding';
 import Profile from './pages/Profile';
@@ -10,9 +10,9 @@ import { authClient } from './lib/auth';
 import AuthProvider from './context/AuthContext';
 function App() {
   return (
-    <NeonAuthUIProvider emailOTP authClient={authClient} defaultTheme="dark">
+    <NeonAuthUIProvider authClient={authClient} defaultTheme="dark">
     <AuthProvider>
-    <HashRouter>
+    <BrowserRouter>
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
@@ -25,7 +25,7 @@ function App() {
       </Routes>
       </main>
       </div>
-    </HashRouter>
+    </BrowserRouter>
     </AuthProvider>
     </NeonAuthUIProvider>
   )
